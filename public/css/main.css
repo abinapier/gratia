@@ -1,1 +1,1 @@
-body{margin:0}header{color:white;background-color:#1E1B18;text-align:center}
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans&display=swap");body{margin:0;font-family:'Open Sans', sans-serif}h1,h2,h3{font-family:'Bebas Neue', sans-serif}header{color:white;background-color:#1E1B18;text-align:center}header img{max-width:80%;width:30em}
