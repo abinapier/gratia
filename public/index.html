@@ -17,12 +17,12 @@
     </div>
     <div class="smallWidth">
     <h2>Sign Into Your Account</h2>
-    <form>
-      <label class="italic">Email:<input type="email" name="email"></label>
-      <label class="italic">Password:<input type="password" name="password"></label>
+    <form action="/login" method="get">
+      <label class="italic">Email:<input type="email" name="email" required></label>
+      <label class="italic">Password:<input type="password" name="password" required></label>
       <input type="submit" value="Login">
     </form>
-    <a class="italic orange" href="#">No account? Create one.</a>
+    <a class="italic orange" href="/createAccount">No account? Create one.</a>
     </div>
   </main>
 </body>

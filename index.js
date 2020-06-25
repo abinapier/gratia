@@ -9,9 +9,8 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
-// set up a rule that says requests to "/math" should be handled by the
-// handleMath function below
-app.get('/getPerson', handlePerson);
+app.get('/login', handleLogin);
+app.get('/createAccount', handleCreateAccount);
 
 // start the server listening
 app.listen(port, function() {
@@ -25,11 +24,22 @@ app.listen(port, function() {
  * they are listed here.
  **********************************************************************/
 
-function handlePerson(request, response) {
+function handleLogin(request, response) {
 
-	const id = request.query.id;
+	const email = request.query.email;
+	const password = request.query.password;
 	//const weight = Number(request.query.weight);
-	console.log(id);
+	console.log(email);
+
+	// TODO: 
+
+	response.end();
+}
+
+function handleCreateAccount(request, response) {
+
+	//const weight = Number(request.query.weight);
+	console.log("create account");
 
 	// TODO: 
 
