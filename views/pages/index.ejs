@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gratia</title>
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <script src="http://code.jquery.com/jquery-3.1.0.min.js"></script>
+  <script src="js/script.js"></script>
+</head>
+
+<body>
+  <header>
+    <img src="/images/logo.svg" alt="Gratia Logo">
+    <h1>A Simple Gratitude Journal</h1>
+  </header>
+  <main>
+    <div class="quote rounded">
+      <q>Gratitude turns what we have into enough</q>
+      <span class="italic">Aesop</span>
+    </div>
+    <div class="smallWidth">
+    <h2>Sign Into Your Account</h2>
+    <form action="/login" method="post">
+      <label class="italic">Email:<input type="email" name="email" required></label>
+      <label class="italic">Password:<input type="password" name="password" required></label>
+      <input type="submit" value="Login">
+    </form>
+    <p class="italic orange link" onclick="viewCreateAccount()">No account? Create one.</p>
+    </div>
+  </main>
+  <div id="overlay">
+    <div class="dark-blur"></div>
+    <% if(locals.overlay){ %>
+      <% overlay %>
+    <% } %>
+  </div>
+</body>
+</html>
