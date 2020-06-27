@@ -28,10 +28,13 @@
     </div>
   </main>
   <div id="overlay">
-    <div class="dark-blur"></div>
+    <div class="dark-blur" onclick="closeOverlay()"></div>
+    <div class='white-over rounded' id="overlayContent">
+      <div class='close'><span onclick='closeOverlay()'>✖</span></div>
     <% if(locals.overlay){ %>
       <% overlay %>
     <% } %>
+    </div>
   </div>
 </body>
 </html>

@@ -1,13 +1,14 @@
 const express = require('express');
 const bodyParser = require("body-parser");
 const passwordHash = require('password-hash');
+require('dotenv').config();
 const { Pool } = require('pg');
 const router = express.Router();
 const app = express();
 const port = process.env.PORT || 5000;
 
 
-const connectionString = process.env.DATABASE_URL || "postgres://yuxepmxcwsfddy:b10bafa234871212b3332090112be0d3b455414cb919f0edb30b46c15591bd8c@ec2-18-214-211-47.compute-1.amazonaws.com:5432/d1j3tgksg948o8";
+const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({connectionString: connectionString});
 
 
