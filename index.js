@@ -9,14 +9,12 @@ const port = process.env.PORT || 5000;
 
 
 const connectionString = process.env.DATABASE_URL;
-
 const pool = new Pool({
 	connectionString: connectionString,
 	ssl: {
 		rejectUnauthorized: false}
 		
 });
-
 
 
 // tell it to use the public directory as one where static files live
@@ -64,6 +62,7 @@ function handleLogin(request, response) {
 
 	const email = request.body.email;
 	const password = request.body.password;
+
 	
 
 	console.log(passwordHash.verify(password, hashedPassword));
@@ -76,6 +75,7 @@ function handleLogin(request, response) {
 }
 
 function handleNewAccount(request, response){
+
 	const firstName = request.body.firstName;
 	const lastName = request.body.lastName;
 	const email = request.body.email;

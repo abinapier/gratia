@@ -8,6 +8,7 @@ function viewCreateAccount(){
 	form += "<label class='italic'>Password: <input type='password' name='createPassword' required></label>";
 	form += "<input type='button' value='Create Account' onclick='createNewAccount()'";
 
+
 	form += "</form>";
 	
 	$('#overlay').show();
