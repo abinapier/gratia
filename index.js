@@ -9,7 +9,13 @@ const port = process.env.PORT || 5000;
 
 
 const connectionString = process.env.DATABASE_URL;
-const pool = new Pool({connectionString: connectionString});
+
+const pool = new Pool({
+	connectionString: connectionString,
+	ssl: {
+		rejectUnauthorized: false}
+		
+});
 
 
 
@@ -58,10 +64,10 @@ function handleLogin(request, response) {
 
 	const email = request.body.email;
 	const password = request.body.password;
-	//var hashedPassword = passwordHash.generate(password);
+	
 
-	console.log(passwordHash.verify('password123', hashedPassword));
-	//const weight = Number(request.query.weight);
+	console.log(passwordHash.verify(password, hashedPassword));
+	
 	console.log(email);
 
 	// TODO: 
@@ -70,15 +76,46 @@ function handleLogin(request, response) {
 }
 
 function handleNewAccount(request, response){
+	const firstName = request.body.firstName;
+	const lastName = request.body.lastName;
+	const email = request.body.email;
+	const password = request.body.password;
 
+	var hashedPassword = passwordHash.generate(password);
+	var sql = "INSERT INTO users (firstName, lastName, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"')";
+
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			// log the response to console
+			console.log("Postgres response:", res);
+		
+			// get the keys for the response object
+			var keys = Object.keys(res);
+		
+			// log the response keys to console
+			console.log("\nkeys type:", typeof keys);
+			console.log("keys for Postgres response:", keys);
+		
+			if (res.rowCount > 0) {
+			  console.log("# of records inserted:", res.rowCount);
+			} else {
+			  console.log("No records were inserted.");
+			}
+		  }
+	});
+
+	
+	response.render('pages/index');
+	
 }
 
 function handleCreateAccount(request, response) {
-
-	//response.render('pages/index', {overlay: '<div>Hi!</div>'});
-
-	// TODO: 
-
+	
 	
 }
 

@@ -12,7 +12,7 @@
     <img src="/images/logo.svg" alt="Gratia Logo">
     <h1>A Simple Gratitude Journal</h1>
   </header>
-  <main>
+  <main id='mainArea'>
     <div class="quote rounded">
       <q>Gratitude turns what we have into enough</q>
       <span class="italic">Aesop</span>
@@ -28,7 +28,7 @@
     </div>
   </main>
   <div id="overlay">
-    <div class="dark-blur" onclick="closeOverlay()"></div>
+    <div class="dark-blur" ></div>
     <div class='white-over rounded' id="overlayContent">
       <div class='close'><span onclick='closeOverlay()'>✖</span></div>
     <% if(locals.overlay){ %>
