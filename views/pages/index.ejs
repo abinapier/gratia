@@ -14,28 +14,19 @@
   </header>
 
   <main id='mainArea'>
-
-
-    <div class="quote rounded">
-      <q>Gratitude turns what we have into enough</q>
-      <span class="italic">Aesop</span>
-    </div>
-    <div class="smallWidth">
-    <h2>Sign Into Your Account</h2>
-    <form action="/login" method="post">
-      <label class="italic">Email:<input type="email" name="email" required></label>
-      <label class="italic">Password:<input type="password" name="password" required></label>
-      <input type="submit" value="Login">
-    </form>
-    <p class="italic orange link" onclick="viewCreateAccount()">No account? Create one.</p>
-    </div>
+    <% if(typeof entrypage != 'undefined'){ %>
+      <% include ../partials/entryList %>
+    <% } else {%>
+      <% include ../partials/login %>
+    <% } %>
+    
   </main>
   <div id="overlay">
     <div class="dark-blur" ></div>
     <div class='white-over rounded' id="overlayContent">
       <div class='close'><span onclick='closeOverlay()'>✖</span></div>
     <% if(locals.overlay){ %>
-      <% overlay %>
+      <%= overlay %>
     <% } %>
     </div>
   </div>

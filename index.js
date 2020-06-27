@@ -1,10 +1,13 @@
 const express = require('express');
+var session = require('express-session');
 const bodyParser = require("body-parser");
 const passwordHash = require('password-hash');
 require('dotenv').config();
 const { Pool } = require('pg');
 const router = express.Router();
 const app = express();
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+
 const port = process.env.PORT || 5000;
 
 
@@ -34,9 +37,7 @@ app.use("/", router);
 // views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.get('/', function(req, res){
-	res.render('pages/index');
-});
+app.get('/', handleMain);
 app.post('/login', handleLogin);
 app.get('/viewCreateAccount', handleCreateAccount);
 app.post('/createNewAccount', handleNewAccount);
@@ -56,7 +57,25 @@ app.listen(port, function() {
  * but for ease of reading this example and seeing all of the pieces
  * they are listed here.
  **********************************************************************/
-
+var ssn;
+function handleMain(request, response){
+	console.log('mainHandler');
+	if(!ssn){
+		console.log('set');
+		ssn = request.session; 
+		ssn.user;
+	}
+	if(ssn.user){
+		console.log('what');
+		app.locals.entryPage = true;
+		entrypage = {entrypage: 'true'};
+		response.render('pages/index', entrypage);
+	}else {
+		response.render('pages/index');
+		return;
+	}
+	response.end()
+}
 
 function handleLogin(request, response) {
 
@@ -75,14 +94,14 @@ function handleLogin(request, response) {
 }
 
 function handleNewAccount(request, response){
-
+	
 	const firstName = request.body.firstName;
 	const lastName = request.body.lastName;
 	const email = request.body.email;
 	const password = request.body.password;
 
 	var hashedPassword = passwordHash.generate(password);
-	var sql = "INSERT INTO users (firstName, lastName, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"')";
+	var sql = "INSERT INTO users (firstName, lastName, email, password) VALUES('"+firstName+"', '"+lastName+"', '"+email+"', '"+hashedPassword+"') RETURNING id";
 
 	pool.query(sql, function(err, res) {
 		// If an error occurred...
@@ -103,14 +122,26 @@ function handleNewAccount(request, response){
 		
 			if (res.rowCount > 0) {
 			  console.log("# of records inserted:", res.rowCount);
+			  console.log("id:", res.rows[0].id);
+			  ssn.user = res.rows[0].id;
 			} else {
 			  console.log("No records were inserted.");
 			}
-		  }
+		}
+		if(ssn.user){
+			console.log('what');
+			app.locals.entryPage = true;
+			entrypage = {entrypage: 'true'};
+			response.render('pages/index', entrypage);
+		}else {
+			response.render('pages/index');
+			return;
+		}
+		response.end()
+		  
 	});
 
 	
-	response.render('pages/index');
 	
 }
 

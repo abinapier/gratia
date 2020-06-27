@@ -33,8 +33,8 @@ function createNewAccount(){
             data: data
         })
         .done(function(){
-			$('#overlay').hide();
-            $('#mainArea').html('<h1>'+data.firstName+'</h1>');
+			location.reload();
+			
         });
 	}
 	return;
