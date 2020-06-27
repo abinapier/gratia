@@ -39,3 +39,16 @@ function createNewAccount(){
 	}
 	return;
 }
+
+function logout(){
+	data = {}
+	$.ajax({
+		type: 'post',
+		url: '/logout',
+		data: data
+	})
+	.done(function(){
+		location.reload();
+		
+	});
+}

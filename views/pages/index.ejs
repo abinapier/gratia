@@ -14,7 +14,7 @@
   </header>
 
   <main id='mainArea'>
-    <% if(typeof entrypage != 'undefined'){ %>
+    <% if(typeof entrypage != 'undefined' && entrypage != null){ %>
       <% include ../partials/entryList %>
     <% } else {%>
       <% include ../partials/login %>

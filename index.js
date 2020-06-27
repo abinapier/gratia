@@ -6,7 +6,7 @@ require('dotenv').config();
 const { Pool } = require('pg');
 const router = express.Router();
 const app = express();
-app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
+app.use(session({secret: 'ssshhhhh',saveUninitialized: false,resave: false}));
 
 const port = process.env.PORT || 5000;
 
@@ -39,6 +39,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.get('/', handleMain);
 app.post('/login', handleLogin);
+app.post('/logout', handleLogout);
 app.get('/viewCreateAccount', handleCreateAccount);
 app.post('/createNewAccount', handleNewAccount);
 app.get('/addEntry', handleAddEntry);
@@ -63,18 +64,32 @@ function handleMain(request, response){
 	if(!ssn){
 		console.log('set');
 		ssn = request.session; 
-		ssn.user;
+		
 	}
 	if(ssn.user){
-		console.log('what');
+		console.log('ssn');
 		app.locals.entryPage = true;
 		entrypage = {entrypage: 'true'};
 		response.render('pages/index', entrypage);
 	}else {
+		console.log('session not set');
+		entrypage = null;
 		response.render('pages/index');
 		return;
 	}
 	response.end()
+}
+
+function handleLogout(request, response){
+	console.log('loggin out');
+	request.session.destroy((err) => {
+		ssn = null;
+        if(err) {
+            return console.log(err);
+        }
+        
+	});
+	response.redirect('/');
 }
 
 function handleLogin(request, response) {
