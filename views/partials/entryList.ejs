@@ -1,2 +1,14 @@
-<h1>Logged In!</h1>
-<a id="logout" onclick="logout()">LogOut</a>
+<div class="horizontal">
+    <a id="logout" onclick="logout()" class="italic pink link">logout</a>
+    <h1>Hi <%=name%>!</h1>
+    <div class="addEntry" onclick="addEntryView()">
+        <img src="/images/add.svg" alt="add new entry">
+        <span>add entry</span>
+    </div>
+</div>
+
+<% if(locals.entries){%>
+    <% entries.forEach(function(entry){ %>
+        <%- include('../partials/entryPreview.ejs', {entry: entry}); %>
+    <% }); %>
+<% } %>

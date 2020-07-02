@@ -52,3 +52,45 @@ function logout(){
 		
 	});
 }
+
+function login(){
+	const emailStr = $('input[name="email"]').val();
+	const passwordStr= $('input[name="password"]').val();
+	data = {email: emailStr, password: passwordStr};
+	$.ajax({
+		type: 'post',
+		url: '/login',
+		data: data
+	})
+	.done(function(){
+		location.reload();
+		
+	});
+}
+
+function addEntryView(){
+	var form = "<h1>Add an Entry for Today</h1>";
+	form += "<form>";
+	form += "<textarea name='newContent' required></textarea>"
+	form += "<input type='button' value='Add Entry' onclick='addNewEntry()'";
+	form += "</form>";
+	
+	$('#overlay').show();
+	$('#overlayContent').append(form);
+}
+
+function addNewEntry(){
+	const newContent = $('textarea[name="newContent"]').val();
+	var today = new Date();
+	const date= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+	data = {content: newContent, date: date};
+	$.ajax({
+		type: 'post',
+		url: '/addEntry',
+		data: data
+	})
+	.done(function(){
+		location.reload();
+		
+	});
+}

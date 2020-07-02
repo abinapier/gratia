@@ -42,7 +42,7 @@ app.post('/login', handleLogin);
 app.post('/logout', handleLogout);
 app.get('/viewCreateAccount', handleCreateAccount);
 app.post('/createNewAccount', handleNewAccount);
-app.get('/addEntry', handleAddEntry);
+app.post('/addEntry', handleAddEntry);
 app.get('/detail', handleDetail);
 app.get('/edit', handleEdit);
 app.get('/delete', handleDelete)
@@ -69,16 +69,58 @@ function handleMain(request, response){
 	if(ssn.user){
 		console.log('ssn');
 		app.locals.entryPage = true;
-		entrypage = {entrypage: 'true'};
-		response.render('pages/index', entrypage);
+		createLoggedInView(request, response);
+		
 	}else {
 		console.log('session not set');
 		entrypage = null;
 		response.render('pages/index');
 		return;
 	}
-	response.end()
+	
 }
+
+function createLoggedInView(request, response){
+	
+	var sql = "SELECT * FROM journalentry WHERE usersid="+ssn.user;
+	let entries=[];
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			console.log(res);
+			for(var i = res.rows.length-1; i>=0; i--){
+				let curEntry = {date: res.rows[i].dateadded, content: res.rows[i].content, id: res.rows[i].id};
+				entries.push(curEntry);
+			}
+			console.log('entries: ', entries);
+			var sql = "SELECT firstname FROM users WHERE id="+ssn.user;
+
+			pool.query(sql, function(err, res) {
+				// If an error occurred...
+				if (err) {
+					console.log("Error in query: ")
+					console.log(err);
+				}
+				if (res !== undefined) {
+					//console.log(res.rows[0].firstname);
+					var name = res.rows[0].firstname;
+					data = {entrypage: 'true', entries: entries, name: name};
+				
+					response.render('pages/index', data);
+				}
+			});
+		
+		}
+		  
+	});
+
+	
+}
+
 
 function handleLogout(request, response){
 	console.log('loggin out');
@@ -97,15 +139,42 @@ function handleLogin(request, response) {
 	const email = request.body.email;
 	const password = request.body.password;
 
-	
-
-	console.log(passwordHash.verify(password, hashedPassword));
-	
 	console.log(email);
+	console.log(passwordHash);
 
-	// TODO: 
+	var sql = "SELECT email, password, id FROM users";
 
-	response.end();
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			for(var i = 0; i< res.rows.length; i++){
+				//console.log(res.rows[i].email);
+				if(res.rows[i].email == email){
+					console.log("email match");
+					if(passwordHash.verify(password, res.rows[i].password)){
+						console.log("valid login");
+						ssn.user = res.rows[i].id;
+					}
+					break;
+				}
+			}
+		
+		}
+
+		if(ssn.user){
+			createLoggedInView(request, response);
+		}else {
+			response.render('pages/index');
+			return;
+		}
+		response.end()
+		  
+	});
+	
 }
 
 function handleNewAccount(request, response){
@@ -144,15 +213,11 @@ function handleNewAccount(request, response){
 			}
 		}
 		if(ssn.user){
-			console.log('what');
-			app.locals.entryPage = true;
-			entrypage = {entrypage: 'true'};
-			response.render('pages/index', entrypage);
+			createLoggedInView(request, response); 
 		}else {
 			response.render('pages/index');
 			return;
 		}
-		response.end()
 		  
 	});
 
@@ -166,13 +231,39 @@ function handleCreateAccount(request, response) {
 }
 
 function handleAddEntry(request, response) {
-
-	//const weight = Number(request.query.weight);
 	console.log("add entry");
+	const content = request.body.content;
+	const date = request.body.date;
+	var sql = "INSERT INTO journalentry (dateadded, content, usersid) VALUES('"+date+"', '"+content+"', '"+ssn.user+"') RETURNING id";
 
-	// TODO: 
-
-	response.end();
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			// log the response to console
+			console.log("Postgres response:", res);
+		
+			// get the keys for the response object
+			var keys = Object.keys(res);
+		
+			// log the response keys to console
+			console.log("\nkeys type:", typeof keys);
+			console.log("keys for Postgres response:", keys);
+		
+			if (res.rowCount > 0) {
+			  console.log("# of records inserted:", res.rowCount);
+			  createLoggedInView(request, response); 
+			} else {
+			  console.log("No records were inserted.");
+			}
+		}
+		
+		  
+	});
+ 
 }
 function handleDetail(request, response) {
 
