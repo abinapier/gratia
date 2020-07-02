@@ -90,6 +90,7 @@ function createLoggedInView(request, response){
 			console.log("Error in query: ")
 			console.log(err);
 		}
+		
 		if (res !== undefined) {
 			console.log(res);
 			for(var i = res.rows.length-1; i>=0; i--){
