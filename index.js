@@ -43,9 +43,11 @@ app.post('/logout', handleLogout);
 app.get('/viewCreateAccount', handleCreateAccount);
 app.post('/createNewAccount', handleNewAccount);
 app.post('/addEntry', handleAddEntry);
-app.get('/detail', handleDetail);
-app.get('/edit', handleEdit);
-app.get('/delete', handleDelete)
+app.post('/detail', handleDetail);
+app.post('/edit', handleEdit);
+app.post('/saveEdit', handleSaveEdit);
+app.post('/viewDeleteConfirmation', handleDetail)
+app.post('/delete', handleDelete);
 
 // start the server listening
 app.listen(port, function() {
@@ -271,9 +273,25 @@ function handleDetail(request, response) {
 	//const weight = Number(request.query.weight);
 	console.log("view detail");
 
-	// TODO: 
+	// TODO: const content = request.body.content;
+	const id = request.body.entryId;
+	var sql = "SELECT * FROM journalentry WHERE id="+id;
 
-	response.end();
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			//console.log(res.rows[0].firstname);
+			var entry = res.rows[0];
+			response.setHeader('Content-Type', 'application/json');
+			response.end(JSON.stringify(entry));
+		}else{
+			console.log('nothing selected');
+		}
+	});
 }
 function handleEdit(request, response) {
 
@@ -281,8 +299,22 @@ function handleEdit(request, response) {
 	console.log("edit entry");
 
 	// TODO: 
+	const id = request.body.entryId;
+	var sql = "SELECT * FROM journalentry WHERE id="+id;
 
-	response.end();
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			//console.log(res.rows[0].firstname);
+			var entry = res.rows[0];
+			response.setHeader('Content-Type', 'application/json');
+			response.end(JSON.stringify(entry));
+		}
+	});
 }
 function handleDelete(request, response) {
 
@@ -291,5 +323,54 @@ function handleDelete(request, response) {
 
 	// TODO: 
 
-	response.end();
+	const id = request.body.entryId;
+	var sql = "DELETE FROM journalentry WHERE id="+id;
+
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			//console.log(res.rows[0].firstname);
+			var entry = res.rows[0];
+			response.end();
+		}
+	});
+
+	
+}
+
+function handleSaveEdit(request, response) {
+	console.log("updating entry");
+	const content = request.body.content;
+	const id = request.body.entryId;
+	var sql = "UPDATE journalentry SET content = '"+content+"' WHERE id="+id;
+
+	pool.query(sql, function(err, res) {
+		// If an error occurred...
+		if (err) {
+			console.log("Error in query: ")
+			console.log(err);
+		}
+		if (res !== undefined) {
+			// log the response to console
+			console.log("Postgres response:", res);
+		
+			// get the keys for the response object
+			var keys = Object.keys(res);
+		
+			// log the response keys to console
+			console.log("\nkeys type:", typeof keys);
+			console.log("keys for Postgres response:", keys);
+		
+		}else{
+			console.log("no update");
+		}
+
+		response.end()
+		
+		  
+	});
 }

@@ -25,9 +25,11 @@
     <div class="dark-blur" ></div>
     <div class='white-over rounded' id="overlayContent">
       <div class='close'><span onclick='closeOverlay()'>✖</span></div>
+      <div id='children'>
     <% if(locals.overlay){ %>
       <%= overlay %>
     <% } %>
+      </div>
     </div>
   </div>
 </body>

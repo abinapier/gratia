@@ -12,11 +12,19 @@ function viewCreateAccount(){
 	form += "</form>";
 	
 	$('#overlay').show();
-	$('#overlayContent').append(form);
+	$('#children').append(form);
 }
 
 function closeOverlay(){
 	$('#overlay').hide();
+	var e = document.getElementById("children"); 
+        
+	//e.firstElementChild can be used. 
+	var child = e.lastElementChild;  
+	while (child) { 
+		e.removeChild(child); 
+		child = e.lastElementChild; 
+	} 
 }
 
 function createNewAccount(){
@@ -76,7 +84,7 @@ function addEntryView(){
 	form += "</form>";
 	
 	$('#overlay').show();
-	$('#overlayContent').append(form);
+	$('#children').append(form);
 }
 
 function addNewEntry(){
@@ -92,5 +100,92 @@ function addNewEntry(){
 	.done(function(){
 		location.reload();
 		
+	});
+}
+
+function viewEntryDetail(id){
+
+	data = {entryId: id};
+	$.ajax({
+		type: 'post',
+		url: '/detail',
+		data: data
+	})
+	.done(function(entry){
+		var date = new Date(entry.dateadded);
+		var form = "<h1>"+date.toDateString()+"</h1>";
+		form += "<p>"+entry.content+"</p>"
+		form += "<a onclick='viewEditEntry("+entry.id+")' class='italic pink link'>edit entry</a>"
+		$('#overlay').show();
+		$('#children').append(form);
+		
+	});
+	
+}
+
+function viewEditEntry(id){
+	data = {entryId: id};
+	$.ajax({
+		type: 'post',
+		url: '/edit',
+		data: data
+	})
+	.done(function(entry){
+		
+		closeOverlay();
+		var form = "<h1>Edit Entry</h1>";
+		form += "<form>";
+		form += "<textarea name='newContent' required>"+entry.content+"</textarea>"
+		form += "<input type='button' value='Save Changes' onclick='saveEntryEdits("+entry.id+")'>";
+		form += "</form>";
+		form += "<a onclick='viewDeleteConfirmation("+entry.id+")' class='italic pink link'>delete entry</a>";
+		$('#overlay').show();
+		$('#children').append(form);
+		
+	});
+}
+
+function saveEntryEdits(id){
+	const newContent = $('textarea[name="newContent"]').val();
+	data = {entryId: id, content: newContent};
+	$.ajax({
+		type: 'post',
+		url: '/saveEdit',
+		data: data
+	})
+	.done(function(entry){
+		location.reload();
+		
+	});
+}
+
+function viewDeleteConfirmation(id){
+	data = {entryId: id};
+	$.ajax({
+		type: 'post',
+		url: '/viewDeleteConfirmation',
+		data: data
+	})
+	.done(function(entry){
+		closeOverlay();
+		var date = new Date(entry.dateadded);
+		var form = "<h1>Delete entry from "+date.toDateString()+"?</h1>";
+		form += "<p>"+entry.content+"</p>"
+		form += "<input type='button' value='Delete Entry' onclick='deleteEntry("+entry.id+")'>";
+		$('#overlay').show();
+		$('#children').append(form);
+		
+	});
+}
+
+function deleteEntry(id){
+	data = {entryId: id};
+	$.ajax({
+		type: 'post',
+		url: '/delete',
+		data: data
+	})
+	.done(function(){
+		location.reload();
 	});
 }
